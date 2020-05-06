@@ -5,8 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script language="JavaScript" src="/js/md5.js"></script>
-    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"  crossorigin="anonymous"integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous" ></script>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous" >
+       <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous" >
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous" ></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous" ></script>
     <title>Lets'Code </title>
@@ -15,6 +14,11 @@
         {
             margin-left: 40%;
             margin-right: 25%;
+        }
+        #login_button
+        {
+            margin-left: 40%;
+            margin-right: 25%; 
         }
         </style>
 </head>
@@ -54,7 +58,12 @@
         <h4 class="modal-title">Log In</h4>
       </div>
       <div class="modal-body">
-        <p>Some text in the modal.</p>
+        <center><pre id="msg_warn">Welcome</pre></center>
+        <div class="modal-body"><center>
+         Email &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="email" name="email" value=" " id="login_email"><br>
+         Password <input type="password" class="mt-3" name="password" value=""  id="login_pass"><br>
+        </div></center>
+        <button type="submit" id="login_button" class="btn btn-primary">Submit</button>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -72,15 +81,15 @@
       <div class="modal-content">
         <div class="modal-header">
           <button type="button" class="close" data-dismiss="modal">&times;</button>
-          <h4 class="modal-title">Log In</h4>
+          <h4 class="modal-title">Sign Up</h4>
         </div>
         <center><pre id="msg_warn">Welcome</pre></center>
-        <div class="modal-body"><center>
+        <div class="modal-body"><center><form name="submit-to-google-sheet">
          Email &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="email" name="email" value="" id="signup_email"><br>
          Password <input type="password" class="mt-3" name="password" id="signup_pass"><br>
         Confirm&nbsp;&nbsp;<input type="password" class="mt-3" name="password" id="signup_pass_confirm">
         </div></center>
-        <button type="submit" id="button_adj" class="btn btn-primary">Submit</button>
+        <button type="submit" id="button_adj" class="btn btn-primary">Submit</button></form>
         
         <div class="modal-footer">
           <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -92,7 +101,7 @@
     </body>
     <!--Google Form Submission Javascript-->
     <script>
-        /*
+        
         const scriptURL = 'https://script.google.com/macros/s/AKfycbyrD091Be2mhpbkn0zVE_TFqGC7lLa3QFR5Ph9gHtiODi6JwLk/exec'
         const form = document.forms['submit-to-google-sheet']
       
@@ -101,8 +110,9 @@
           fetch(scriptURL, { method: 'POST', body: new FormData(form)})
             .then(response => console.log('Success!', response))
             .catch(error => console.error('Error!', error.message))
-        })*/
+        })
       </script>
+      
           <!--MD5 Encoding From External Library-->
     <script language="JavaScript">
          hash = calcMD5("input string");
@@ -121,6 +131,40 @@
         }
     })
     </script>
+    <script>
+        
+ $.getJSON("https://spreadsheets.google.com/feeds/list/1aPYshu6wypZfD1J9LhNwylzpVfgOjtTpFYw_KEm2WWk/od6/public/basic?alt=json", function(data) {
+    var total_reg=Object.keys(data.feed.entry).length
+    var auth_hash=calcMD5(data.feed.entry[1]['content']['$t']);
+    
+});
+        </script>
+<script>
+        $("#login_button").click(function(){
+            var login_email=document.getElementById("login_email").value
+            var login_pass=document.getElementById("login_pass").value
+            console.log(calcMD5("password: "+login_pass+", email: "+login_email))
+            var auth_login_hash=calcMD5("password: "+login_pass+", email: "+login_email)
+            $.getJSON("https://spreadsheets.google.com/feeds/list/1aPYshu6wypZfD1J9LhNwylzpVfgOjtTpFYw_KEm2WWk/od6/public/basic?alt=json", function(data) {
+            var total_reg=Object.keys(data.feed.entry).length
+            for(var i=0;i<total_reg;i++)
+            {
+                var auth_hash=calcMD5(data.feed.entry[i]['content']['$t']);
+                if(auth_login_hash==auth_hash)
+                {
+                    alert("1");
+                }
+                else
+                {
+                    $("#msg_warn").text("Failed") 
+                }
+            }
+             
+    
+            });
+         
+        })
+     </script>
 
 
 </html>

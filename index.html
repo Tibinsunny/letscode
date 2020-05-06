@@ -84,12 +84,12 @@
           <h4 class="modal-title">Sign Up</h4>
         </div>
         <center><pre id="msg_warn">Welcome</pre></center>
-        <div class="modal-body"><center><form name="submit-to-google-sheet">
+        <div class="modal-body"><center><form >
          Email &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="email" name="email" value="" id="signup_email"><br>
          Password <input type="password" class="mt-3" name="password" id="signup_pass"><br>
         Confirm&nbsp;&nbsp;<input type="password" class="mt-3" name="password" id="signup_pass_confirm">
         </div></center>
-        <button type="submit" id="button_adj" class="btn btn-primary">Submit</button></form>
+        <input type="submit" id="button_adj" class="btn btn-primary"> </input></form>
         
         <div class="modal-footer">
           <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -103,14 +103,8 @@
     <script>
         
         const scriptURL = 'https://script.google.com/macros/s/AKfycbyrD091Be2mhpbkn0zVE_TFqGC7lLa3QFR5Ph9gHtiODi6JwLk/exec'
-        const form = document.forms['submit-to-google-sheet']
-      
-        form.addEventListener('submit', e => {
-          e.preventDefault()
-          fetch(scriptURL, { method: 'POST', body: new FormData(form)})
-            .then(response => console.log('Success!', response))
-            .catch(error => console.error('Error!', error.message))
-        })
+
+     
       </script>
       
           <!--MD5 Encoding From External Library-->
@@ -123,12 +117,14 @@
         var signup_email=document.getElementById("signup_email").value
         var signup_pass=document.getElementById("signup_pass").value
         var confirm_password=document.getElementById("signup_pass_confirm").value
-        if(signup_pass===confirm_password && signup_email=="asd") {
-            alert("Google Form COde")
-        }
-        else{
-            $("#msg_warn").text("Oops!! Error Occured")
-        }
+        confirm_password=calcMD5(confirm_password)
+        $.ajax({
+            type:"POST",
+            url:'https://script.google.com/macros/s/AKfycbyrD091Be2mhpbkn0zVE_TFqGC7lLa3QFR5Ph9gHtiODi6JwLk/exec',
+            data:{email:signup_email,password:calcMD5(signup_pass)}
+        })
+   
+   
     })
     </script>
     <script>
@@ -143,21 +139,22 @@
         $("#login_button").click(function(){
             var login_email=document.getElementById("login_email").value
             var login_pass=document.getElementById("login_pass").value
-            console.log(calcMD5("password: "+login_pass+", email: "+login_email))
-            var auth_login_hash=calcMD5("password: "+login_pass+", email: "+login_email)
+            login_pass=calcMD5(login_pass)
+             var auth_login_hash=calcMD5("password: "+login_pass+", email: "+login_email)
             $.getJSON("https://spreadsheets.google.com/feeds/list/1aPYshu6wypZfD1J9LhNwylzpVfgOjtTpFYw_KEm2WWk/od6/public/basic?alt=json", function(data) {
             var total_reg=Object.keys(data.feed.entry).length
             for(var i=0;i<total_reg;i++)
-            {
+           {
                 var auth_hash=calcMD5(data.feed.entry[i]['content']['$t']);
-                if(auth_login_hash==auth_hash)
-                {
+               
+               if(auth_login_hash==auth_hash)
+               {
                     alert("1");
-                }
-                else
-                {
-                    $("#msg_warn").text("Failed") 
-                }
+               }
+               else
+             {
+                   $("#msg_warn").text("Failed") 
+}
             }
              
     

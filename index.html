@@ -20,11 +20,12 @@
             margin-left: 40%;
             margin-right: 25%; 
         }
+      
         </style>
 </head>
     <body>
          <nav class="navbar navbar-expand-sm navbar-light bg-dark">
-             <a class="navbar-brand makeitread" href="#"><font color=white>Let'Code</font></a>
+             <a class="navbar-brand makeitread" href="#"><font id="head_color" color=white>Let'Code</font></a>
              <button class="navbar-toggler d-lg-none" type="button" data-toggle="collapse" data-target="#collapsibleNavId" aria-controls="collapsibleNavId"
                  aria-expanded="false" aria-label="Toggle navigation">
                  <span class="navbar-toggler-icon"></span>
@@ -40,7 +41,7 @@
                      <li class="nav-item">
                         <a class="nav-link" href="#" data-toggle="modal" data-target="#myModal2"><font color=white>Signup</font></a>
                     </li>
-                     
+                    <a class="nav-link" href="/logout.html"><font color=white id="logout"></font></font></a>
                  </ul>
              </div>
          </nav> 
@@ -98,6 +99,8 @@
   
     </div>
   </div>
+  <div class="container" id="content_body">
+    </div>
     </body>
     <!--Google Form Submission Javascript-->
     <script>
@@ -136,8 +139,12 @@
 });
         </script>
 <script>
+   
         $("#login_button").click(function(){
-            var login_email=document.getElementById("login_email").value
+            
+           
+        
+             var login_email=document.getElementById("login_email").value
             var login_pass=document.getElementById("login_pass").value
             login_pass=calcMD5(login_pass)
              var auth_login_hash=calcMD5("password: "+login_pass+", email: "+login_email)
@@ -149,18 +156,30 @@
                
                if(auth_login_hash==auth_hash)
                {
-                    alert("1");
+                    var auth_no=1;
                }
-               else
-             {
-                   $("#msg_warn").text("Failed") 
-}
+              
             }
+            if(auth_no==1)
+            {
+                localStorage.setItem("authkey", auth_login_hash);
+               $("font").text("")   
+               $("#head_color").text("Dashboard")
+               $("#logout").text("Logout")   
+               $("#msg_warn").text("Successufly LoggedIn") 
+               $('#myModal').modal('toggle');
+               $('#content_body').html("<form><div class=form-group><label for=exampleInputEmail1>Email address</label><input type=email class=form-control id=exampleInputEmail1 aria-describedby=emailHelp placeholder=Enter email><small id=emailHelp class=form-text text-muted>We'll never share your email with anyone else.</small></div><div class=form-group><label for=exampleInputPassword1>Password</label><input type=password class=form-control id=exampleInputPassword1 placeholder=Password></div> <button type=submit class=btn btn-primary>Submit</button></form>")
+            }
+            else{$("#msg_warn").text("Error") }
              
     
             });
          
-        })
+        
+      
+    })
+
+  
      </script>
 
 
